@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>API 서버 로그인</title>
+    <style>.input-group label{width : 200px; display : inline-block;}</style>
+  </head>
+  <body>
+    {% if user and user.id %}
+      <span class="user-name">안녕하세요! {{user.id}}님</span>
+      <a href="/auth/logout">
+        <button>로그아웃</button>
+      </a>
+      <fieldset>
+        <legend>도메인 등록</legend>
+        <form action="/domain" method="post">
+          <div>
+            <label for="type-free">free</label>
+            <input type="radio" id="type-free" name="type" value="free">
+            <label for="type-premium">premium</label>
+            <input type="radio" id="type-premium" name="type" value="premium">
+          </div> 
+          <div>
+            <label for="host">domain</label>
+            <input type="text" id="host" name="host" placeholder="ex)zerocho.com">
+          </div>
+          <button>save</button>
+        </form>  
+      </fieldset>
+      <table>
+        <tr>
+          <th>domain address</th>
+          <th>type</th>
+          <th>client secret key</th>
+        </tr>
+        {% for domain in domains %}
+        <tr>
+          <td>{{domain.host}}</td>
+          <td>{{domain.type}}</td>
+          <td>{{domain.clientSecret}}</td>
+        </tr>
+        {% endfor %}
+      </table>
+    {% else %}
+      <form action="/auth/login" id="login-form" method="post">
+        <h2>Please Login through your Nodebird account</h2>
+        <div class="input-group">
+          <label for="email">email</label>
+          <input id="email" type="email" name="email" required autofocus>
+        </div>
+        <div class="input-group">
+          <label for="password">password</label>
+          <input id="password" type="password" name="password" required>
+        </div>
+        <div>register via localhost : 8001</div>
+        <button id="login" type="submit">login</button>
+      </form>
+      <script>
+        window.onload = ()=>{
+          if(new URL(location.href).searchParams.get('loginError')){
+            alert(new URL(location.href).searchParams.get('loginError'));
+          }
+        };
+      </script>
+    {% endif %}
+  </body>
+</html>
